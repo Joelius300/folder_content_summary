@@ -4,13 +4,13 @@ import hashlib
 import os
 from datetime import datetime
 from io import RawIOBase
-from os import path
+from os import path, PathLike
 from typing import Iterable
 
 BUFFER_SIZE = 128 * 2 ** 10  # 128kb
 
 
-def sha256sum(filename: str | os.PathLike[str]):
+def sha256sum(filename: str | PathLike[str]):
     h = hashlib.sha256()
     b = bytearray(BUFFER_SIZE)
     mv = memoryview(b)
@@ -21,7 +21,7 @@ def sha256sum(filename: str | os.PathLike[str]):
     return h.hexdigest()
 
 
-def summarize_file(root: str | os.PathLike[str], full_path: str | os.PathLike[str]):
+def summarize_file(root: str | PathLike[str], full_path: str | PathLike[str]):
     """Returns the following things of the specified file as an array:
 
         - A relative path from the root to this file
@@ -30,15 +30,15 @@ def summarize_file(root: str | os.PathLike[str], full_path: str | os.PathLike[st
         - The size of the file in bytes
     """
     hash_sum = sha256sum(full_path)
-    date_changed = datetime.fromtimestamp(os.path.getmtime(full_path))
+    date_changed = datetime.fromtimestamp(path.getmtime(full_path))
     date_changed_str = date_changed.isoformat(sep=' ', timespec='seconds')
-    size = os.path.getsize(full_path)
+    size = path.getsize(full_path)
     rel_path = path.relpath(full_path, root)
 
     return [rel_path, hash_sum, date_changed_str, size]
 
 
-def summarize_all_files(folder_path: str | os.PathLike[str]) -> Iterable[Iterable]:
+def summarize_all_files(folder_path: str | PathLike[str]) -> Iterable[Iterable]:
     """Iterate all the files in the given folder (including subfolders) in alphabetical order."""
     for root, dirs, files in os.walk(folder_path):
         # ensure consistent order across platforms etc.
