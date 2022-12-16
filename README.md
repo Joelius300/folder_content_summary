@@ -3,9 +3,11 @@
 A tiny script that summarizes the files inside a folder (including subfolder)
 and outputs the file's path, SHA256 hashsum, last modified date and size (in bytes) to a csv.
 
-The motivation for this project is comparing multiple different folders on different system
+The motivation for this script is comparing folders on different system
 without having to have access to both folders at the same time. This can be used for example
-to try to scrap together files from multiple different systems to restore a wiped cloud.
+to try and scrap together files from multiple different systems to restore a wiped cloud.
+
+It summarizes the current working directory into a `summary.csv` file (also in that directory, watch for conflicts). Quick and dirty but it works great. Feel free to adjust it to your needs.
 
 ## Usage
 
