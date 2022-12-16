@@ -7,6 +7,13 @@ The motivation for this project is comparing multiple different folders on diffe
 without having to have access to both folders at the same time. This can be used for example
 to try to scrap together files from multiple different systems to restore a wiped cloud.
 
+## Usage
+
+```shell
+cd to/your/folder
+python to/this/repo/summarize_folder.py
+```
+
 ## License
 
 "No Rights Reserved"
