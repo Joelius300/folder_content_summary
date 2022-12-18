@@ -9,6 +9,8 @@ to try and scrap together files from multiple different systems to restore a wip
 
 It summarizes the current working directory into a `summary.csv` file (also in that directory, watch for conflicts). Quick and dirty but it works great. Feel free to adjust it to your needs.
 
+Ps. it did what it was supposed to but there were some encoding issues as well as platform dependent path delimiters, so maybe fix that before using or you'll have to do it in post :)
+
 ## Usage
 
 ```shell
