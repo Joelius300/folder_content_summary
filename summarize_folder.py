@@ -29,14 +29,18 @@ def summarize_file(root: str | PathLike[str], full_path: str | PathLike[str]):
         - The last modified date of this file as ISO string
         - The size of the file in bytes
     """
-    hash_sum = sha256sum(full_path)
+    rel_path = path.relpath(full_path, root)
+    # normalize paths to unix with slash instead of backslash for easier comparison
+    rel_path = rel_path.replace("\\", "/")
+
+    try:
+        hash_sum = sha256sum(full_path)
+    except OSError:
+        return [rel_path, "COULD NOT PROCESS", "COULD NOT PROCESS", 0]
+
     date_changed = datetime.fromtimestamp(path.getmtime(full_path))
     date_changed_str = date_changed.isoformat(sep=' ', timespec='seconds')
     size = path.getsize(full_path)
-    rel_path = path.relpath(full_path, root)
-
-    # normalize paths to unix with slash instead of backslash for easier comparison
-    rel_path = rel_path.replace("\\\\", "/")
 
     return [rel_path, hash_sum, date_changed_str, size]
 
@@ -62,7 +66,7 @@ if __name__ == '__main__':
     dialect.quoting = csv.QUOTE_NONNUMERIC
 
     print(f"Summarizing files in '{cur_dir}' ...")
-    with open(output_file, 'w', newline='', encoding='utf-8') as csv_file:
+    with open(output_file, 'w', newline='', encoding='utf-16') as csv_file:
         csv_writer = csv.writer(csv_file, dialect)
         csv_writer.writerow(headers)
         csv_writer.writerows(summarize_all_files(cur_dir))
