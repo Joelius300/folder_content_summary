@@ -24,7 +24,7 @@ def sha256sum(filename: str | PathLike[str]):
 def summarize_file(root: str | PathLike[str], full_path: str | PathLike[str]):
     """Returns the following things of the specified file as an array:
 
-        - A relative path from the root to this file
+        - A relative path from the root to this file using slashes (always unix, even on windows)
         - The SHA256 hash sum of the file
         - The last modified date of this file as ISO string
         - The size of the file in bytes
@@ -34,6 +34,9 @@ def summarize_file(root: str | PathLike[str], full_path: str | PathLike[str]):
     date_changed_str = date_changed.isoformat(sep=' ', timespec='seconds')
     size = path.getsize(full_path)
     rel_path = path.relpath(full_path, root)
+
+    # normalize paths to unix with slash instead of backslash for easier comparison
+    rel_path = rel_path.replace("\\\\", "/")
 
     return [rel_path, hash_sum, date_changed_str, size]
 
@@ -59,7 +62,7 @@ if __name__ == '__main__':
     dialect.quoting = csv.QUOTE_NONNUMERIC
 
     print(f"Summarizing files in '{cur_dir}' ...")
-    with open(output_file, 'w', newline='') as csv_file:
+    with open(output_file, 'w', newline='', encoding='utf-8') as csv_file:
         csv_writer = csv.writer(csv_file, dialect)
         csv_writer.writerow(headers)
         csv_writer.writerows(summarize_all_files(cur_dir))
